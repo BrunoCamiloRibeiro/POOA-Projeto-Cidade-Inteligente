@@ -13,6 +13,7 @@ void setup()
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 
   client.setServer(MQTT_BROKER, MQTT_PORT);
+  client.setCallback(callback);
 }
 
 void loop() 
@@ -23,7 +24,10 @@ void loop()
 
   client.loop();
 
-  controlePadrao();
+  if(!bloqueioManual()){
+    controlePadrao();
+  }
+  
 }
 
 
