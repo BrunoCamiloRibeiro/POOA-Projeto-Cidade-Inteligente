@@ -15,7 +15,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   String acao = doc["acao"];
 
-  // ações
+  if (acao == "ligar_manual") {
+    ligarManual();
+  } else if (acao == "desligar_manual") {
+    desligarManual();
+  } else if (acao == "resetar_sistema"){
+    ESP.restart();
+  } else{
+    Serial.println("Ação desconhecida recebida: " + acao);
+  }
 }
 
 void reconectar()
