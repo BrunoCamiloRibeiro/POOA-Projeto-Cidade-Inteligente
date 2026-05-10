@@ -14,8 +14,7 @@ void controlePadrao()
 {
   struct tm timeinfo;
   if (getLocalTime(&timeinfo)){
-
-    if(verificarLuz() && timeinfo.tm_hour >= 18 || timeinfo.tm_hour < 6)
+    if(verificarLuz() && (timeinfo.tm_hour >= 18 || timeinfo.tm_hour < 6))
     {
       digitalWrite(LED1, HIGH);
       digitalWrite(LED2, HIGH);
@@ -61,4 +60,51 @@ int retornaNumeroLed(int led)
       default:
          return -1; 
    }
+}
+
+void ligarManual()
+{
+  bloqueioManual(true); 
+
+  digitalWrite(LED1, HIGH);
+  digitalWrite(LED2, HIGH);
+  digitalWrite(LED3, HIGH);
+}
+
+void desligarManual()
+{
+  bloqueioManual(true); 
+
+  digitalWrite(LED1, LOW);
+  digitalWrite(LED2, LOW);
+  digitalWrite(LED3, LOW);
+}
+
+bool bloqueioManual(bool acionar = false) 
+{
+  static bool bloqueioAtivo = false;
+  static time_t timestampLiberacao = 0;
+
+  time_t agora = time(nullptr);
+
+  if (acionar && !bloqueioAtivo){ 
+    bloqueioAtivo = true;
+    
+    struct tm *infoTempo = localtime(&agora);
+    infoTempo->tm_hour = 6;
+    infoTempo->tm_min = 0;
+    infoTempo->tm_sec = 0;
+    infoTempo->tm_mday += 1;
+
+    timestampLiberacao = mktime(infoTempo);
+  }
+
+  
+  if (bloqueioAtivo){
+    if (agora >= timestampLiberacao){
+      bloqueioAtivo = false; 
+    }
+  }
+
+  return bloqueioAtivo; 
 }
