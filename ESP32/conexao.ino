@@ -14,8 +14,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
   deserializeJson(doc, payload, length);
 
   String acao = doc["acao"];
+  String bairro = doc["bairro"];
 
-  if (acao == "ligar_manual") {
+  if(bairro != Bairro) {
+    return;
+  }
+
+  if (acao == "ligar_manual"  ) {
     ligarManual();
   } else if (acao == "desligar_manual") {
     desligarManual();
